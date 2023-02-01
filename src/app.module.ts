@@ -13,9 +13,14 @@ import {TypeOrmModule} from "@nestjs/typeorm";
 import {ImageEntity} from "./product/entity/image.entity";
 import {CategoryEntity} from "./category/entity/category.entity";
 import {DiscountEntity} from "./discount/entity/discount.entity";
+import {ConfigModule} from "@nestjs/config";
+
 
 @Module({
     imports: [
+        ConfigModule.forRoot({
+            isGlobal : true
+        }),
         UserModule,
         OrderModule,
         ProductModule,
@@ -30,8 +35,7 @@ import {DiscountEntity} from "./discount/entity/discount.entity";
             database: 'e-commerce',
             entities: [UserEntity, OrderEntity, ProductEntity,ImageEntity,CategoryEntity,DiscountEntity],
             synchronize: true,
-        })
-
+        }),
     ],
     controllers: [AppController],
     providers: [AppService],

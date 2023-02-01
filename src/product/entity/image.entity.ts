@@ -16,7 +16,7 @@ export class ImageEntity {
         product=>product.images,
         {
             onDelete : 'CASCADE',
-            onUpdate : 'CASCADE'
+            onUpdate : 'CASCADE',
         }
     )
     product : ProductEntity

@@ -37,8 +37,7 @@ export class ProductEntity {
         type => ImageEntity,
         image=>image.product,
         {
-            onDelete : 'CASCADE',
-            onUpdate : 'CASCADE'
+            cascade : ["insert"],
         }
     )
     images : ImageEntity[]
