@@ -1,4 +1,6 @@
-import {Column, Entity, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn} from "typeorm";
+
+import {BasketEntity} from "../../basket/entity/basket.entity";
 
 export enum UserRole {
     admin = 'admin',
@@ -54,5 +56,33 @@ export class UserEntity {
     })
     role : string
 
+
+    // @ManyToMany(
+    //     type => ProductEntity,
+    //     product=>product.basketUser
+    // )
+    // @JoinTable({
+    //     name : "basket",
+    //     joinColumn : {
+    //         name : "userId",
+    //         referencedColumnName: "id"
+    //     },
+    //     inverseJoinColumn:{
+    //         name : "productId",
+    //         referencedColumnName : "id"
+    //     },
+    //     synchronize : true
+    //     }
+    // )
+    // basketProducts : ProductEntity[]
+
+    @OneToOne(
+        type => BasketEntity,
+        {
+            cascade : true
+        }
+    )
+    @JoinColumn()
+    basket : BasketEntity
 
 }

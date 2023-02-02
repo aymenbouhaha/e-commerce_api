@@ -22,7 +22,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     }
 
     async validate(payload: PayloadInterface) {
-        const user = await this.userRepository.findOne({where : {email : payload.email}})
+        const user = await this.userRepository.findOne({where : {email : payload.email} , relations: ["basket"]})
         if (!user) {
             throw new UnauthorizedException()
         }else {

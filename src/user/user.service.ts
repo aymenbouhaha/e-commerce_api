@@ -6,6 +6,7 @@ import {JwtService} from "@nestjs/jwt";
 import {SignUpDto} from "./dto/sign-up.dto";
 import * as bcrypt from 'bcrypt';
 import {LoginDto} from "./dto/login.dto";
+import {BasketEntity} from "../basket/entity/basket.entity";
 
 @Injectable()
 export class UserService {
@@ -25,10 +26,11 @@ export class UserService {
         )
         user.salt= await bcrypt.genSalt();
         user.password = await bcrypt.hash(user.password,user.salt)
+        user.basket=new BasketEntity()
         try {
             await this.userRepository.save(user)
         }catch (e){
-            throw new ConflictException("Un erreur lors de sign up")
+            throw e
         }
         return {
             id : user.id,
@@ -40,7 +42,7 @@ export class UserService {
 
     async login(credentials : LoginDto){
         const {email, password} = credentials;
-        const user = await this.userRepository.findOneBy([{email: email}])
+        const user = await this.userRepository.findOne({where : {email : email} , relations : ["basket"]})
 
         if (!user) {
             throw new NotFoundException(`l'email ou le mot de passe sont incorrecte`)
@@ -59,6 +61,7 @@ export class UserService {
             const token = await this.jwtService.sign(payload)
 
             return {
+                ...user,
                 "token": token
             }
 

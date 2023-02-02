@@ -14,6 +14,10 @@ import {ImageEntity} from "./product/entity/image.entity";
 import {CategoryEntity} from "./category/entity/category.entity";
 import {DiscountEntity} from "./discount/entity/discount.entity";
 import {ConfigModule} from "@nestjs/config";
+import { BasketModule } from './basket/basket.module';
+import {BasketEntity} from "./basket/entity/basket.entity";
+import {OrderProductEntity} from "./order/entity/order-product.entity";
+import {BasketProductEntity} from "./basket/entity/basket-product.entity";
 
 
 @Module({
@@ -33,9 +37,10 @@ import {ConfigModule} from "@nestjs/config";
             username: 'root',
             password: '',
             database: 'e-commerce',
-            entities: [UserEntity, OrderEntity, ProductEntity,ImageEntity,CategoryEntity,DiscountEntity],
+            entities: [UserEntity, OrderEntity, ProductEntity,ImageEntity,CategoryEntity,DiscountEntity,BasketEntity, OrderProductEntity, BasketProductEntity],
             synchronize: true,
         }),
+        BasketModule,
     ],
     controllers: [AppController],
     providers: [AppService],
