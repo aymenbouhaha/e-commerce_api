@@ -55,6 +55,6 @@ export class OrderEntity {
             referencedColumnName : 'id'
         },
     })
-    product : ProductEntity
+    product : ProductEntity[]
 
 }

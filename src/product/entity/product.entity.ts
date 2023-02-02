@@ -23,7 +23,6 @@ export class ProductEntity {
     @Column()
     itemsNumber : number
 
-
     @ManyToOne(
         type => CategoryEntity,
         {
@@ -41,7 +40,6 @@ export class ProductEntity {
         }
     )
     images : ImageEntity[]
-
 
     @OneToMany(
         type => DiscountEntity,
