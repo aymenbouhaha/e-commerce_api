@@ -5,6 +5,7 @@ import {UserEntity, UserRole} from "../user/entity/user.entity";
 import {ProductOrderDto} from "../order/dto/product-order.dto";
 import {ProductService} from "../product/product.service";
 import {BasketProductEntity} from "./entity/basket-product.entity";
+import {Repository} from "typeorm";
 
 
 @Injectable()
