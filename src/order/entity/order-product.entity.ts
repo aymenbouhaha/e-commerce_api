@@ -1,4 +1,4 @@
-import {Column, Entity, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
 import {OrderEntity} from "./order.entity";
 import {ProductEntity} from "../../product/entity/product.entity";
 
@@ -22,7 +22,7 @@ export class OrderProductEntity{
     @ManyToOne(
         type => ProductEntity,
         {
-            cascade : true
+            cascade : ["remove" ,"insert"]
         }
     )
     product : ProductEntity

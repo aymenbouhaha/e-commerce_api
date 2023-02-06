@@ -1,10 +1,11 @@
-import {Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
+import {Check, Column, Entity,  ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import {CategoryEntity} from "../../category/entity/category.entity";
 import {ImageEntity} from "./image.entity";
 import {DiscountEntity} from "../../discount/entity/discount.entity";
-import {UserEntity} from "../../user/entity/user.entity";
+
 
 @Entity("product")
+@Check(`"itemsNumber" >= 0`)
 export class ProductEntity {
 
 
@@ -51,14 +52,6 @@ export class ProductEntity {
         }
     )
     discount : DiscountEntity[]
-
-    @Column({
-        type : "boolean",
-        default : false
-    })
-    locked : boolean
-
-
 
 
 }

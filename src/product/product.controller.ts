@@ -21,4 +21,12 @@ export class ProductController {
     return this.productService.getProducts()
   }
 
+
+  // @Post("update")
+  // updateProduct(@Body() id ){
+  //   console.log(id)
+  //   return this.productService.updateProduct(id.id)
+  // }
+
+
 }

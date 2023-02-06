@@ -10,9 +10,12 @@ export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
 
-  // @Post()
-  // @UseGuards(JwtAuthGuard)
-  // async makeOrder(@Body() makeOrder: MakeOrderDto, @User() user: Partial<UserEntity>) {
-  //   return await this.orderService.makeOrder(user, makeOrder)
-  // }
+  @Post("make")
+  @UseGuards(JwtAuthGuard)
+  async makeOrder(@Body() makeOrder: MakeOrderDto, @User() user: Partial<UserEntity>) {
+    return await this.orderService.makeOrder(user, makeOrder)
+  }
+
+
+
 }

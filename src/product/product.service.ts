@@ -55,6 +55,10 @@ export class ProductService {
         return await this.productRepository.findOneBy({id : id})
     }
 
+    // async updateProduct(id: number){
+    //     return await this.productRepository.update(id,{itemsNumber : 2})
+    // }
+
 
 
 }
