@@ -1,57 +1,46 @@
-import {Check, Column, Entity,  ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
-import {CategoryEntity} from "../../category/entity/category.entity";
-import {ImageEntity} from "./image.entity";
-import {DiscountEntity} from "../../discount/entity/discount.entity";
+import {
+  Check,
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { CategoryEntity } from '../../category/entity/category.entity';
+import { ImageEntity } from './image.entity';
+import { DiscountEntity } from '../../discount/entity/discount.entity';
 
-
-@Entity("product")
+@Entity('product')
 @Check(`"itemsNumber" >= 0`)
 export class ProductEntity {
+  @PrimaryGeneratedColumn()
+  id: number;
 
+  @Column()
+  name: string;
 
-    @PrimaryGeneratedColumn()
-    id : number
+  @Column({
+    type: 'float',
+  })
+  price: number;
 
-    @Column()
-    name : string
+  @Column()
+  itemsNumber: number;
 
-    @Column(
-        {
-            type : "float"
-        }
-    )
-    price : number
+  @ManyToOne((type) => CategoryEntity, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  category: CategoryEntity;
 
-    @Column()
-    itemsNumber : number
+  @OneToMany((type) => ImageEntity, (image) => image.product, {
+    cascade: ['insert'],
+  })
+  images: ImageEntity[];
 
-    @ManyToOne(
-        type => CategoryEntity,
-        {
-            onDelete : 'CASCADE',
-            onUpdate : 'CASCADE'
-        }
-    )
-    category : CategoryEntity
-
-    @OneToMany(
-        type => ImageEntity,
-        image=>image.product,
-        {
-            cascade : ["insert"],
-        }
-    )
-    images : ImageEntity[]
-
-    @OneToMany(
-        type => DiscountEntity,
-        discount=>discount.product,
-        {
-            onDelete : 'CASCADE',
-            onUpdate : 'CASCADE'
-        }
-    )
-    discount : DiscountEntity[]
-
-
+  @OneToMany((type) => DiscountEntity, (discount) => discount.product, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  discount: DiscountEntity[];
 }

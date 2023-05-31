@@ -1,58 +1,47 @@
 import {
-    Column,
-    CreateDateColumn,
-    Entity,
-    ManyToOne,
-    PrimaryGeneratedColumn,
-    OneToMany
-} from "typeorm";
-import {UserEntity} from "../../user/entity/user.entity";
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  OneToMany,
+} from 'typeorm';
+import { UserEntity } from '../../user/entity/user.entity';
 
-import {OrderProductEntity} from "./order-product.entity";
-
+import { OrderProductEntity } from './order-product.entity';
 
 export enum OrderState {
-    pending = 'En Cours',
-    delivred = 'Delivré',
-    canceled = 'Annulé'
+  pending = 'En Cours',
+  delivred = 'Delivré',
+  canceled = 'Annulé',
 }
 
-@Entity("order")
+@Entity('order')
 export class OrderEntity {
+  @PrimaryGeneratedColumn()
+  id: number;
 
+  @Column({
+    type: 'enum',
+    enum: OrderState,
+    default: OrderState.pending,
+  })
+  status: string;
 
-    @PrimaryGeneratedColumn()
-    id : number
+  @CreateDateColumn()
+  date: Date;
 
-    @Column(
-        {
-            type : "enum",
-            enum : OrderState,
-            default : OrderState.pending
-        }
-    )
-    status : string
+  @ManyToOne((type) => UserEntity, {
+    onDelete: 'CASCADE',
+  })
+  client: UserEntity;
 
-    @CreateDateColumn()
-    date : Date
-
-    @ManyToOne(
-        type => UserEntity,
-        {
-            onDelete : 'CASCADE',
-        }
-    )
-    client : UserEntity
-
-
-    @OneToMany(
-        type => OrderProductEntity,
-        orderProduct=>orderProduct.order,
-        {
-            cascade : [ "insert" , "remove"]
-        }
-    )
-    orderProducts : OrderProductEntity[]
-
-
+  @OneToMany(
+    (type) => OrderProductEntity,
+    (orderProduct) => orderProduct.order,
+    {
+      cascade: ['insert', 'remove'],
+    },
+  )
+  orderProducts: OrderProductEntity[];
 }

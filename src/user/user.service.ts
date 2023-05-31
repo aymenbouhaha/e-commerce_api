@@ -16,6 +16,7 @@ import {LoginDto} from "./dto/login.dto";
 import {BasketEntity} from "../basket/entity/basket.entity";
 import {MailService} from "./mail/mail.service";
 import {VerifyCodeDto} from "./dto/verify-code.dto";
+import {UpdateUserDto} from "./dto/update-user.dto";
 
 @Injectable()
 export class UserService {
@@ -98,14 +99,16 @@ export class UserService {
 
             const token = await this.jwtService.sign(payload)
 
-            return {
-                ...user,
-                "token": token
-            }
-
-        } else {
-            throw new NotFoundException(`l'email ou le mot de passe sont incorrecte`)
-        }
-
+      return {
+        ...user,
+        token: token,
+      };
+    } else {
+      throw new NotFoundException(`l'email ou le mot de passe sont incorrecte`);
     }
+  }
+
+  update(id: number, userData: UpdateUserDto) {
+    return this.userRepository.update(id, userData);
+  }
 }

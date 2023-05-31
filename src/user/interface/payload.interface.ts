@@ -1,15 +1,13 @@
+export interface PayloadInterface {
+  firstName: string;
 
-export interface PayloadInterface{
+  lastName: string;
 
-    firstName : string
+  email: string;
 
-    lastName : string
+  role: string;
 
-    email :string
+  phoneNumber: string;
 
-    role : string
-
-    phoneNumber :string
-
-    address : string
+  address: string;
 }
