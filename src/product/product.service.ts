@@ -8,7 +8,7 @@ import {CategoryService} from "../category/category.service";
 import {ImageEntity} from "./entity/image.entity";
 import {UpdateProductDto} from "./dto/update-product.dto";
 import { v4 as uuidv4 } from 'uuid';
-import sharp from "sharp";
+import * as sharp from "sharp";
 import {PaginateDto} from "../common/paginate.dto";
 
 @Injectable()
@@ -79,6 +79,7 @@ export class ProductService {
             imageEntity.name=uuidv4()+image.originalname
             imageEntity.type=image.mimetype
             const buffer=await sharp(image.buffer).resize(100).toBuffer()
+            imageEntity.data=buffer
             product.images.push(imageEntity)
         }
     }
