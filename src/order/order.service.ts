@@ -1,16 +1,18 @@
 import {ConflictException, Injectable, UnauthorizedException} from '@nestjs/common';
 import {InjectRepository} from "@nestjs/typeorm";
 import {OrderEntity} from "./entity/order.entity";
-import {DataSource, Repository} from "typeorm";
+import {DataSource, QueryRunner, Repository} from "typeorm";
 import {UserEntity, UserRole} from "../user/entity/user.entity";
 import {ProductService} from "../product/product.service";
 import {MakeOrderDto} from "./dto/make-order.dto";
 import {ProductEntity} from "../product/entity/product.entity";
 import {OrderProductEntity} from "./entity/order-product.entity";
 import {BasketProductEntity} from "../basket/entity/basket-product.entity";
+import {PaginateDto} from "../common/paginate.dto";
 
 @Injectable()
 export class OrderService {
+
 
     constructor(
         @InjectRepository(OrderEntity)
@@ -20,34 +22,57 @@ export class OrderService {
     ) {
     }
 
-    async getOrders(user: Partial<UserEntity>){
+
+    async getOrders(user: Partial<UserEntity> , paginationOptions : PaginateDto){
+        let skip= null;
+        let take = null;
+        if (paginationOptions.nb && paginationOptions.page){
+            skip = (paginationOptions.page -1)*paginationOptions.nb
+            take=paginationOptions.nb
+        }
         if (user.role==UserRole.admin){
-            return await this.orderRepository.find({relations : ["client", "orderProducts"]})
+            return await this.orderRepository.find(
+                {
+                    relations : ["client", "orderProducts"],
+                    take : take,
+                    skip : skip
+                }
+            )
         }else {
-            return await this.orderRepository.find({where : {client : user}, relations : ["orderProducts"]} )
+            return await this.orderRepository.find(
+                {
+                    where : {client : user}, relations : ["orderProducts"],
+                    take : take,
+                    skip : skip
+                }
+            )
         }
     }
 
 
+
     async makeOrder(user : Partial<UserEntity>, productsToOrder : MakeOrderDto){
+
         if (user.role!=UserRole.client){
             throw new UnauthorizedException("l'admin ne peut pas faire des commandes")
         }
         let product
         let products : ProductEntity[] = []
+        const queryRunner = this.dataSource.createQueryRunner()
+        await queryRunner.connect()
+        await queryRunner.startTransaction()
         for (const productToOrder of productsToOrder.product) {
-            product= await this.productService.getProductById(productToOrder.id)
+            product= await this.productService.getProductByIdWithQueryRunner(queryRunner.manager,productToOrder.id)
             if (!product){
+                await this.releaseTransaction(queryRunner)
                 throw new ConflictException("L'un des produits n'existe pas")
             }
             if (productToOrder.itemsNumber>product.itemsNumber){
+                await this.releaseTransaction(queryRunner)
                 throw new ConflictException("La quantité que vous demandez est superieur a la quantité existante dans le stock")
             }
             products.push(product)
         }
-        const queryRunner = this.dataSource.createQueryRunner()
-        await queryRunner.connect()
-        await queryRunner.startTransaction()
         try {
             const order=queryRunner.manager.create(OrderEntity,{
                 client : user,
@@ -68,10 +93,15 @@ export class OrderService {
             return order
         }
         catch (e) {
-            await queryRunner.rollbackTransaction()
-            await queryRunner.release()
+            await this.releaseTransaction(queryRunner)
             throw new ConflictException("La commande n'est pas effectué veuillez essayer ultirierement")
         }
+    }
+
+
+    private async releaseTransaction(queryRunner: QueryRunner) {
+        await queryRunner.rollbackTransaction()
+        await queryRunner.release()
     }
 
 

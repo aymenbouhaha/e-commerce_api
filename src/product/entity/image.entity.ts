@@ -8,7 +8,13 @@ export class ImageEntity {
     id : number
 
     @Column()
-    src : string
+    name: string;
+
+    @Column()
+    type: string;
+
+    @Column({ type: 'longblob' })
+    data: Buffer;
 
 
     @ManyToOne(

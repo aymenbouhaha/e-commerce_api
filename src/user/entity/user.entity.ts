@@ -1,6 +1,7 @@
 import {Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn} from "typeorm";
 
 import {BasketEntity} from "../../basket/entity/basket.entity";
+import {Exclude} from "class-transformer";
 
 export enum UserRole {
     admin = 'admin',
@@ -42,11 +43,13 @@ export class UserEntity {
     @Column({
         nullable: false,
     })
+    @Exclude()
     password : string
 
     @Column({
         nullable: false,
     })
+    @Exclude()
     salt : string
 
     @Column({
@@ -55,6 +58,18 @@ export class UserEntity {
         default : UserRole.client,
     })
     role : string
+
+    @Column(
+        {
+            type : "boolean",
+            default : false
+        }
+    )
+    verified: boolean
+
+    @Column()
+    @Exclude()
+    verificationCode : string
 
 
     // @ManyToMany(

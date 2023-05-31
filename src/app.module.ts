@@ -18,8 +18,11 @@ import { BasketModule } from './basket/basket.module';
 import {BasketEntity} from "./basket/entity/basket.entity";
 import {OrderProductEntity} from "./order/entity/order-product.entity";
 import {BasketProductEntity} from "./basket/entity/basket-product.entity";
+import * as dotenv from 'dotenv';
+import {MailerModule} from "@nestjs-modules/mailer";
 
 
+dotenv.config()
 @Module({
     imports: [
         ConfigModule.forRoot({
@@ -30,6 +33,17 @@ import {BasketProductEntity} from "./basket/entity/basket-product.entity";
         ProductModule,
         CategoryModule,
         DiscountModule,
+        MailerModule.forRoot(
+            {
+                transport: {
+                    service: "hotmail",
+                    auth: {
+                        user: process.env.MAIL_USER,
+                        pass: process.env.MAIL_PASSWORD,
+                    },
+                },
+            }
+        ),
         TypeOrmModule.forRoot({
             type: 'mysql',
             host: 'localhost',

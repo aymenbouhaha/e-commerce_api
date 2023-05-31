@@ -1,4 +1,11 @@
-import {Injectable, NotFoundException} from '@nestjs/common';
+import {
+    ConflictException,
+    GatewayTimeoutException,
+    HttpException,
+    HttpStatus,
+    Injectable,
+    NotFoundException
+} from '@nestjs/common';
 import {InjectRepository} from "@nestjs/typeorm";
 import {UserEntity} from "./entity/user.entity";
 import {Repository} from "typeorm";
@@ -7,6 +14,8 @@ import {SignUpDto} from "./dto/sign-up.dto";
 import * as bcrypt from 'bcrypt';
 import {LoginDto} from "./dto/login.dto";
 import {BasketEntity} from "../basket/entity/basket.entity";
+import {MailService} from "./mail/mail.service";
+import {VerifyCodeDto} from "./dto/verify-code.dto";
 
 @Injectable()
 export class UserService {
@@ -14,7 +23,8 @@ export class UserService {
     constructor(
         @InjectRepository(UserEntity)
         private userRepository : Repository<UserEntity>,
-        private jwtService : JwtService
+        private jwtService : JwtService,
+        private mailService: MailService
     ) {
     }
 
@@ -26,11 +36,18 @@ export class UserService {
         )
         user.salt= await bcrypt.genSalt();
         user.password = await bcrypt.hash(user.password,user.salt)
+        const verifCode = Math.floor(1000+ Math.random()*9000).toString()
+        user.verificationCode=verifCode
         user.basket=new BasketEntity()
         try {
             await this.userRepository.save(user)
         }catch (e){
-            throw e
+            throw new ConflictException("Une erreur est survenue veuillez réessayer")
+        }
+        try {
+            this.mailService.sendVerificationCode(user.email,user.verificationCode)
+        }catch (e) {
+            throw new GatewayTimeoutException("Email was not sent")
         }
         return {
             id : user.id,
@@ -38,6 +55,27 @@ export class UserService {
             role : user.role,
         }
 
+    }
+
+    async verifyAccount(couple : Partial<UserEntity>,verifyCode: VerifyCodeDto) {
+        if (couple.verified){
+            return {
+                "verified" : true
+            }
+        }else {
+            if (verifyCode.code==couple.verificationCode){
+                try {
+                    await this.userRepository.update(couple.id,{verified : true})
+                }catch (e) {
+                    throw new HttpException("Une erreur est survenue veuillez réesseayer", HttpStatus.AMBIGUOUS)
+                }
+                return {
+                    "verified" : true
+                }
+            }else {
+                throw new HttpException("Le code n'est pas correcte", HttpStatus.BAD_REQUEST)
+            }
+        }
     }
 
     async login(credentials : LoginDto){

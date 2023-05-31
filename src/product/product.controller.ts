@@ -1,9 +1,11 @@
-import {Body, Controller, Get, Post, UseGuards} from '@nestjs/common';
+import {Body, Controller, Get, Post, Query, UploadedFiles, UseGuards, UseInterceptors} from '@nestjs/common';
 import { ProductService } from './product.service';
 import {AddProductDto} from "./dto/add-product.dto";
 import {JwtAuthGuard} from "../user/guard/jwt-auth.guard";
 import {User} from "../decorator/user.decorator";
 import {UserEntity} from "../user/entity/user.entity";
+import {FilesInterceptor} from "@nestjs/platform-express";
+import {PaginateDto} from "../common/paginate.dto";
 
 @Controller('product')
 export class ProductController {
@@ -11,22 +13,34 @@ export class ProductController {
 
   @Post("add")
   @UseGuards(JwtAuthGuard)
-  async addProduct(@Body() newProduct : AddProductDto, @User() user : Partial<UserEntity>){
-    return this.productService.addProduct(newProduct,user)
+  @UseInterceptors(FilesInterceptor(
+      "images",
+      10,
+      {
+        fileFilter :
+            (req, file, callback)=>{
+              if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
+                return callback(new Error('Vous pouvez ajouter que des images'), false);
+              }
+              callback(null, true);
+            }
+      }
+  ))
+  async addProduct(
+      @Body() newProduct : AddProductDto,
+      @User() user : Partial<UserEntity>,
+      @UploadedFiles() images : Array<Express.Multer.File>
+  ){
+    return this.productService.addProduct(newProduct,user,images)
   }
 
 
   @Get()
-  getProducts(){
-    return this.productService.getProducts()
+  getProducts(@Query() paginateDto : PaginateDto){
+    return this.productService.getProducts(paginateDto)
   }
 
 
-  // @Post("update")
-  // updateProduct(@Body() id ){
-  //   console.log(id)
-  //   return this.productService.updateProduct(id.id)
-  // }
 
 
 }
