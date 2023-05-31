@@ -120,12 +120,5 @@ export class ProductService {
     }
 
 
-    // @Post('add-image')
-    // @UseInterceptors(FilesInterceptor('images'))
-    // async addImages(user : Partial<UserEntity>, productId : number, ){
-    //
-    // }
-
-
 
 }

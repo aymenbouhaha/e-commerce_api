@@ -16,6 +16,7 @@ import {LoginDto} from "./dto/login.dto";
 import {BasketEntity} from "../basket/entity/basket.entity";
 import {MailService} from "./mail/mail.service";
 import {VerifyCodeDto} from "./dto/verify-code.dto";
+import {UpdateUserDto} from "./dto/update-user.dto";
 
 @Injectable()
 export class UserService {

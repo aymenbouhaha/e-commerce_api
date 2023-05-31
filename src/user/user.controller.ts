@@ -1,5 +1,4 @@
-import {Body, Controller, Patch, Post, UseGuards} from '@nestjs/common';
-import { Body, Controller, Param, Patch, Post } from '@nestjs/common';
+import {Body, Controller, Param, Patch, Post, UseGuards} from '@nestjs/common';
 import { UserService } from './user.service';
 import {SignUpDto} from "./dto/sign-up.dto";
 import {LoginDto} from "./dto/login.dto";
@@ -7,6 +6,7 @@ import {JwtAuthGuard} from "./guard/jwt-auth.guard";
 import {User} from "../decorator/user.decorator";
 import {UserEntity} from "./entity/user.entity";
 import {VerifyCodeDto} from "./dto/verify-code.dto";
+import {UpdateUserDto} from "./dto/update-user.dto";
 
 @Controller('user')
 export class UserController {

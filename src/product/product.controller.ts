@@ -1,4 +1,4 @@
-import {Body, Controller, Get, Post, Query, UploadedFiles, UseGuards, UseInterceptors} from '@nestjs/common';
+import {Body, Controller, Get, Param, Patch, Post, Query, UploadedFiles, UseGuards, UseInterceptors} from '@nestjs/common';
 import { ProductService } from './product.service';
 import {AddProductDto} from "./dto/add-product.dto";
 import {JwtAuthGuard} from "../user/guard/jwt-auth.guard";
@@ -55,8 +55,8 @@ export class ProductController {
   }
 
   @Get('category/:categoryName')
-  async getProductByCategory(@Param() categoryName: string) {
-    return await this.productService.getProductByCategory(categoryName);
+  async getProductByCategory(@Param() categoryName: string,@Param() paginationOptions : PaginateDto) {
+    return await this.productService.getProductByCategory(categoryName,paginationOptions);
   }
 
 

@@ -1,9 +1,10 @@
-import { Body, Controller, Get, Post, UseGuards } from "@nestjs/common";
+import {Body, Controller, Get, Param, Post, UseGuards} from "@nestjs/common";
 import { OrderService } from './order.service';
 import { JwtAuthGuard } from '../user/guard/jwt-auth.guard';
 import { MakeOrderDto } from './dto/make-order.dto';
 import { User } from '../decorator/user.decorator';
 import { UserEntity } from '../user/entity/user.entity';
+import {PaginateDto} from "../common/paginate.dto";
 
 @Controller('order')
 export class OrderController {
@@ -19,7 +20,7 @@ export class OrderController {
   }
   @Get()
   @UseGuards(JwtAuthGuard)
-  async getOrders(@User() user: Partial<UserEntity>) {
-    return await this.orderService.getOrders(user);
+  async getOrders(@User() user: Partial<UserEntity>,@Param() paginationOptions: PaginateDto) {
+    return await this.orderService.getOrders(user,paginationOptions);
   }
 }
