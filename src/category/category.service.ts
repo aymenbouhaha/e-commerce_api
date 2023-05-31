@@ -17,4 +17,9 @@ export class CategoryService {
         return await this.categoryRepository.findOneBy({name : name})
     }
 
+
+    async getCategories(){
+        return await this.categoryRepository.find()
+    }
+
 }

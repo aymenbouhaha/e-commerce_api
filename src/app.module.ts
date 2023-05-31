@@ -39,6 +39,8 @@ import {BasketProductEntity} from "./basket/entity/basket-product.entity";
             database: 'e-commerce',
             entities: [UserEntity, OrderEntity, ProductEntity,ImageEntity,CategoryEntity,DiscountEntity,BasketEntity, OrderProductEntity, BasketProductEntity],
             synchronize: true,
+            // logging : true,
+            timezone : "GMT+1"
         }),
         BasketModule,
     ],
