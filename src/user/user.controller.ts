@@ -1,4 +1,5 @@
 import {Body, Controller, Patch, Post, UseGuards} from '@nestjs/common';
+import { Body, Controller, Param, Patch, Post } from '@nestjs/common';
 import { UserService } from './user.service';
 import {SignUpDto} from "./dto/sign-up.dto";
 import {LoginDto} from "./dto/login.dto";
@@ -21,6 +22,10 @@ export class UserController {
     return this.userService.login(credentials);
   }
 
+  @Patch('update/:id')
+  update(@Param('id') id: number, @Body() userData: UpdateUserDto) {
+    return this.userService.update(id, userData);
+  }
 
   @UseGuards(JwtAuthGuard)
   @Patch("verify")

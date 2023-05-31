@@ -9,8 +9,7 @@ import {UserEntity} from "./entity/user.entity";
 import {JwtStrategy} from "./strategy/passport-jwt.strategy";
 import { MailService } from './mail/mail.service';
 
-
-dotenv.config()
+dotenv.config();
 @Module({
     imports: [
         TypeOrmModule.forFeature([UserEntity]),

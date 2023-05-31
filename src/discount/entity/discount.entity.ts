@@ -1,8 +1,6 @@
-import {Check, Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
 import {ProductEntity} from "../../product/entity/product.entity";
 
-
-@Check(`"endDate >= "startDate"`)
 @Entity("discount")
 export class DiscountEntity {
 
@@ -13,7 +11,6 @@ export class DiscountEntity {
     startDate : Date
 
     @Column()
-
     endDate : Date
 
     @Column()
@@ -28,7 +25,4 @@ export class DiscountEntity {
         }
     )
     product : ProductEntity
-
-
-
 }

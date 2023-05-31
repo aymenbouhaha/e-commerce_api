@@ -6,6 +6,7 @@ import {User} from "../decorator/user.decorator";
 import {UserEntity} from "../user/entity/user.entity";
 import {FilesInterceptor} from "@nestjs/platform-express";
 import {PaginateDto} from "../common/paginate.dto";
+import { UpdateProductDto } from './dto/update-product.dto';
 
 @Controller('product')
 export class ProductController {
@@ -34,12 +35,29 @@ export class ProductController {
     return this.productService.addProduct(newProduct,user,images)
   }
 
-
   @Get()
   getProducts(@Query() paginateDto : PaginateDto){
     return this.productService.getProducts(paginateDto)
   }
 
+  @Get(':id')
+  async getProductById(@Param() id: number) {
+    return await this.productService.getProductById(id);
+  }
+
+  @Patch(':id')
+  async updateProduct(
+    @Param() id: number,
+    @Body() productDto: UpdateProductDto,
+    @User() user: Partial<UserEntity>,
+  ) {
+    return await this.productService.updateProduct(user, id, productDto);
+  }
+
+  @Get('category/:categoryName')
+  async getProductByCategory(@Param() categoryName: string) {
+    return await this.productService.getProductByCategory(categoryName);
+  }
 
 
 
