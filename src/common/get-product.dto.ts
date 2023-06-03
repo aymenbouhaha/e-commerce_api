@@ -1,16 +1,16 @@
-import {IsNumber, IsOptional} from "class-validator";
+import {IsNumber, IsOptional, IsString} from "class-validator";
 import {Type} from "class-transformer";
 
-export class PaginateDto {
+export class GetProductDto {
 
     @IsOptional()
     @IsNumber()
     @Type(() => Number)
     page: number;
 
+
     @IsOptional()
-    @Type(() => Number)
-    @IsNumber()
-    nb: number;
+    @IsString()
+    category : string
 
 }

@@ -8,7 +8,7 @@ import {MakeOrderDto} from "./dto/make-order.dto";
 import {ProductEntity} from "../product/entity/product.entity";
 import {OrderProductEntity} from "./entity/order-product.entity";
 import {BasketProductEntity} from "../basket/entity/basket-product.entity";
-import {PaginateDto} from "../common/paginate.dto";
+import {GetProductDto} from "../common/get-product.dto";
 
 @Injectable()
 export class OrderService {
@@ -23,12 +23,11 @@ export class OrderService {
     }
 
 
-    async getOrders(user: Partial<UserEntity> , paginationOptions : PaginateDto){
+    async getOrders(user: Partial<UserEntity> , paginationOptions : GetProductDto){
         let skip= null;
-        let take = null;
-        if (paginationOptions.nb && paginationOptions.page){
-            skip = (paginationOptions.page -1)*paginationOptions.nb
-            take=paginationOptions.nb
+        let take = 15;
+        if ( paginationOptions.page){
+            skip = (paginationOptions.page -1)*take
         }
         if (user.role==UserRole.admin){
             return await this.orderRepository.find(

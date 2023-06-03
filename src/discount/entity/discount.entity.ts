@@ -1,4 +1,4 @@
-import {Column, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, OneToOne, PrimaryGeneratedColumn} from "typeorm";
 import {ProductEntity} from "../../product/entity/product.entity";
 
 @Entity("discount")
@@ -16,13 +16,9 @@ export class DiscountEntity {
     @Column()
     value : number
 
-    @ManyToOne(
+    @OneToOne(
         type => ProductEntity,
         product=>product.discount,
-        {
-            onDelete : 'CASCADE',
-            onUpdate : 'CASCADE'
-        }
     )
     product : ProductEntity
 }

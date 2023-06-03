@@ -100,7 +100,8 @@ export class UserService {
             const token = await this.jwtService.sign(payload)
 
       return {
-        ...user,
+        ...payload,
+          basket: user.basket,
         token: token,
       };
     } else {
