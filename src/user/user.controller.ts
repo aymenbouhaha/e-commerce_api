@@ -22,15 +22,16 @@ export class UserController {
     return this.userService.login(credentials);
   }
 
-  @Patch('update/:id')
-  update(@Param('id') id: number, @Body() userData: UpdateUserDto) {
-    return this.userService.update(id, userData);
+  @UseGuards(JwtAuthGuard)
+  @Patch('update')
+  update(@User() user : Partial<UserEntity>, @Body() userData: UpdateUserDto) {
+    return this.userService.update(user, userData);
   }
 
   @UseGuards(JwtAuthGuard)
   @Patch("verify")
-  verifyAccount(@User() couple : Partial<UserEntity>,@Body() verifyCredentials : VerifyCodeDto){
-    return this.userService.verifyAccount(couple,verifyCredentials)
+  verifyAccount(@User() user : Partial<UserEntity>,@Body() verifyCredentials : VerifyCodeDto){
+    return this.userService.verifyAccount(user,verifyCredentials)
   }
 
 }

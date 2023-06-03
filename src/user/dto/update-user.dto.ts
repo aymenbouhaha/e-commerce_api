@@ -17,9 +17,6 @@ export class UpdateUserDto {
   @IsNotEmpty()
   email: string;
 
-  @IsString()
-  @IsNotEmpty()
-  password: string;
 
   @IsPhoneNumber()
   @IsNotEmpty()

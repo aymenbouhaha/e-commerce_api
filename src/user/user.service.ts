@@ -109,7 +109,8 @@ export class UserService {
     }
   }
 
-  update(id: number, userData: UpdateUserDto) {
-    return this.userRepository.update(id, userData);
+  update(user : Partial<UserEntity>, userData: UpdateUserDto) {
+
+    return this.userRepository.update(user.id,userData);
   }
 }
