@@ -23,6 +23,10 @@ export class AddProductDto{
     @IsNotEmpty()
     categoryName : string
 
+    @IsString()
+    @IsNotEmpty()
+    description : string
+
 
 
 }

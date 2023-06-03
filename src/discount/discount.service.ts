@@ -1,4 +1,10 @@
-import {ConflictException, Injectable, NotFoundException, UnauthorizedException} from '@nestjs/common';
+import {
+    BadRequestException,
+    ConflictException,
+    Injectable,
+    NotFoundException,
+    UnauthorizedException
+} from '@nestjs/common';
 import {InjectRepository} from "@nestjs/typeorm";
 import {DiscountEntity} from "./entity/discount.entity";
 import {Repository} from "typeorm";
@@ -24,6 +30,9 @@ export class DiscountService {
         const product = await this.productService.getProductById(newDiscount.productId)
         if (!product) {
             throw new NotFoundException()
+        }
+        if(product.discount){
+            throw new BadRequestException("Le Produit est deja en promotion")
         }
         const discount = this.discountRepository.create({
             value: newDiscount.value,

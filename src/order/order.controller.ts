@@ -4,7 +4,7 @@ import { JwtAuthGuard } from '../user/guard/jwt-auth.guard';
 import { MakeOrderDto } from './dto/make-order.dto';
 import { User } from '../decorator/user.decorator';
 import { UserEntity } from '../user/entity/user.entity';
-import {PaginateDto} from "../common/paginate.dto";
+import {GetProductDto} from "../common/get-product.dto";
 
 @Controller('order')
 export class OrderController {
@@ -20,7 +20,7 @@ export class OrderController {
   }
   @Get()
   @UseGuards(JwtAuthGuard)
-  async getOrders(@User() user: Partial<UserEntity>,@Param() paginationOptions: PaginateDto) {
+  async getOrders(@User() user: Partial<UserEntity>,@Param() paginationOptions: GetProductDto) {
     return await this.orderService.getOrders(user,paginationOptions);
   }
 }

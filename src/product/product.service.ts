@@ -9,7 +9,7 @@ import {ImageEntity} from "./entity/image.entity";
 import {UpdateProductDto} from "./dto/update-product.dto";
 import { v4 as uuidv4 } from 'uuid';
 import * as sharp from "sharp";
-import {PaginateDto} from "../common/paginate.dto";
+import {GetProductDto} from "../common/get-product.dto";
 
 @Injectable()
 export class ProductService {
@@ -21,42 +21,56 @@ export class ProductService {
     ) {
     }
 
-    async getProducts(paginationOptions : PaginateDto) {
+    async getProducts(paginationOptions : GetProductDto) {
         let skip= null;
-        let take = null;
-        if (paginationOptions.nb && paginationOptions.page){
-            skip = (paginationOptions.page -1)*paginationOptions.nb
-            take=paginationOptions.nb
+        let take = 15;
+        if (paginationOptions.page){
+            skip = (paginationOptions.page -1)*take
+
+        }
+        if (paginationOptions.category){
+            const category = await this.categoryService.getCategroyByName(paginationOptions.category)
+            if (!category){
+                throw new ConflictException("la category n'existe pas")
+            }
+            return this.productRepository.find(
+                {
+                    where : {category : category},
+                    relations : ["images", "category" ],
+                    take:take,
+                    skip: skip
+                }
+            )
         }
         return await this.productRepository.find(
             {
-                relations: ["images", "category" , "discount"],
+                relations: ["images", "category"],
                 skip : skip,
                 take : take
             }
         )
     }
 
-    async getProductByCategory(categoryName : string, paginationOptions : PaginateDto){
-        const category = await this.categoryService.getCategroyByName(categoryName)
-        if (!category){
-            throw new ConflictException("la category n'existe pas")
-        }
-        let skip= null;
-        let take = null;
-        if (paginationOptions.nb && paginationOptions.page){
-            skip = (paginationOptions.page -1)*paginationOptions.nb
-            take=paginationOptions.nb
-        }
-        return this.productRepository.find(
-            {
-                where : {category : category},
-                relations : ["images", "category" , "discount"],
-                take:take,
-                skip: skip
-            }
-        )
-    }
+    // async getProductByCategory(categoryName : string, paginationOptions : GetProductDto){
+    //     const category = await this.categoryService.getCategroyByName(categoryName)
+    //     if (!category){
+    //         throw new ConflictException("la category n'existe pas")
+    //     }
+    //     let skip= null;
+    //     let take = null;
+    //     if (paginationOptions.nb && paginationOptions.page){
+    //         skip = (paginationOptions.page -1)*paginationOptions.nb
+    //         take=paginationOptions.nb
+    //     }
+    //     return this.productRepository.find(
+    //         {
+    //             where : {category : category},
+    //             relations : ["images", "category" ],
+    //             take:take,
+    //             skip: skip
+    //         }
+    //     )
+    // }
 
 
     async addProduct(newProduct : AddProductDto, user : Partial<UserEntity>, images : Array<Express.Multer.File>){
@@ -78,8 +92,8 @@ export class ProductService {
             const imageEntity : ImageEntity= new ImageEntity()
             imageEntity.name=uuidv4()+image.originalname
             imageEntity.type=image.mimetype
-            const buffer=await sharp(image.buffer).resize(100).toBuffer()
-            imageEntity.data=buffer
+            // const buffer=await sharp(image.buffer).resize(100).toBuffer()
+            imageEntity.data=image.buffer
             product.images.push(imageEntity)
         }
     }

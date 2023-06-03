@@ -1,11 +1,23 @@
-import {Body, Controller, Get, Param, Patch, Post, Query, UploadedFiles, UseGuards, UseInterceptors} from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Get,
+    Param,
+    ParseIntPipe,
+    Patch,
+    Post,
+    Query,
+    UploadedFiles,
+    UseGuards,
+    UseInterceptors
+} from '@nestjs/common';
 import { ProductService } from './product.service';
 import {AddProductDto} from "./dto/add-product.dto";
 import {JwtAuthGuard} from "../user/guard/jwt-auth.guard";
 import {User} from "../decorator/user.decorator";
 import {UserEntity} from "../user/entity/user.entity";
 import {FilesInterceptor} from "@nestjs/platform-express";
-import {PaginateDto} from "../common/paginate.dto";
+import {GetProductDto} from "../common/get-product.dto";
 import { UpdateProductDto } from './dto/update-product.dto';
 
 @Controller('product')
@@ -36,16 +48,18 @@ export class ProductController {
   }
 
   @Get()
-  getProducts(@Query() paginateDto : PaginateDto){
+  getProducts(@Query() paginateDto : GetProductDto){
     return this.productService.getProducts(paginateDto)
   }
 
   @Get(':id')
-  async getProductById(@Param() id: number) {
+  async getProductById(@Param("id",ParseIntPipe) id: number) {
+      console.log(id)
     return await this.productService.getProductById(id);
   }
 
   @Patch(':id')
+  @UseGuards(JwtAuthGuard)
   async updateProduct(
     @Param() id: number,
     @Body() productDto: UpdateProductDto,
@@ -54,10 +68,7 @@ export class ProductController {
     return await this.productService.updateProduct(user, id, productDto);
   }
 
-  @Get('category/:categoryName')
-  async getProductByCategory(@Param() categoryName: string,@Param() paginationOptions : PaginateDto) {
-    return await this.productService.getProductByCategory(categoryName,paginationOptions);
-  }
+
 
 
 
