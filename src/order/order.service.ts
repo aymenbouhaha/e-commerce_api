@@ -32,7 +32,7 @@ export class OrderService {
         if (user.role==UserRole.admin){
             return await this.orderRepository.find(
                 {
-                    relations : ["client", "orderProducts"],
+                    relations : ["client", "orderProducts", "orderProducts.product", "orderProducts.product.images"],
                     take : take,
                     skip : skip
                 }
@@ -40,7 +40,7 @@ export class OrderService {
         }else {
             return await this.orderRepository.find(
                 {
-                    where : {client : user}, relations : ["orderProducts"],
+                    where : {client : user}, relations : ["orderProducts" , "orderProducts.product", "orderProducts.product.images"],
                     take : take,
                     skip : skip
                 }

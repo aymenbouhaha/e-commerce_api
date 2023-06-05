@@ -81,22 +81,22 @@ export class UserService {
 
     async login(credentials : LoginDto){
         const {email, password} = credentials;
-        const user = await this.userRepository.findOne({where : {email : email} , relations : ["basket"]})
-
+        const user = await this.userRepository.findOne({where : {email : email} , relations : ["basket", "basket.basketProduct", "basket.basketProduct.product" , "basket.basketProduct.product.images"]})
         if (!user) {
             throw new NotFoundException(`l'email ou le mot de passe sont incorrecte`)
         }
         const hashedPassword = await bcrypt.hash(password, user.salt)
         if (hashedPassword == user.password) {
             const payload = {
+                id : user.id,
                 firstName : user.firstName,
                 lastName : user.lastName,
                 email: user.email,
                 role: user.role,
                 phoneNumber: user.phoneNumber,
-                address : user.address
+                address : user.address,
+                verified : user.verified
             }
-
             const token = await this.jwtService.sign(payload)
 
       return {

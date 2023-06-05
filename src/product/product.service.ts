@@ -23,17 +23,19 @@ export class ProductService {
 
     async getProducts(paginationOptions : GetProductDto) {
         let skip= null;
-        let take = 15;
+        let take = 2;
         if (paginationOptions.page){
-            skip = (paginationOptions.page -1)*take
+            skip = (paginationOptions.page -1)*2
 
         }
+        console.log(paginationOptions)
+        const length = await this.productRepository.count()
         if (paginationOptions.category){
             const category = await this.categoryService.getCategroyByName(paginationOptions.category)
             if (!category){
                 throw new ConflictException("la category n'existe pas")
             }
-            return this.productRepository.find(
+            const products = await this.productRepository.find(
                 {
                     where : {category : category},
                     relations : ["images", "category" ],
@@ -41,36 +43,25 @@ export class ProductService {
                     skip: skip
                 }
             )
+            return {
+                products : products,
+                length : length
+            }
         }
-        return await this.productRepository.find(
+        const products=await  this.productRepository.find(
             {
                 relations: ["images", "category"],
                 skip : skip,
                 take : take
             }
         )
+        console.log(length)
+        return  {
+            products : products,
+            length : length
+        }
     }
 
-    // async getProductByCategory(categoryName : string, paginationOptions : GetProductDto){
-    //     const category = await this.categoryService.getCategroyByName(categoryName)
-    //     if (!category){
-    //         throw new ConflictException("la category n'existe pas")
-    //     }
-    //     let skip= null;
-    //     let take = null;
-    //     if (paginationOptions.nb && paginationOptions.page){
-    //         skip = (paginationOptions.page -1)*paginationOptions.nb
-    //         take=paginationOptions.nb
-    //     }
-    //     return this.productRepository.find(
-    //         {
-    //             where : {category : category},
-    //             relations : ["images", "category" ],
-    //             take:take,
-    //             skip: skip
-    //         }
-    //     )
-    // }
 
 
     async addProduct(newProduct : AddProductDto, user : Partial<UserEntity>, images : Array<Express.Multer.File>){

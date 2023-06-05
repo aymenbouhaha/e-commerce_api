@@ -10,7 +10,7 @@ export class BasketProductEntity {
   @ManyToOne((type) => BasketEntity, (basket) => basket.basketProduct)
   productBasket: BasketEntity;
 
-  @ManyToOne((type) => ProductEntity)
+  @ManyToOne((type) => ProductEntity )
   product: ProductEntity;
 
   @Column()

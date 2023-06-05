@@ -12,6 +12,7 @@ export class OrderProductEntity {
 
   @ManyToOne((type) => ProductEntity, {
     cascade: ['remove', 'insert'],
+    eager : true
   })
   product: ProductEntity;
 

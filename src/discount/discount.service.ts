@@ -11,6 +11,7 @@ import {Repository} from "typeorm";
 import {UserEntity, UserRole} from "../user/entity/user.entity";
 import {AddDiscountDto} from "./dto/add-discount.dto";
 import {ProductService} from "../product/product.service";
+import {GetProductDto} from "../common/get-product.dto";
 
 @Injectable()
 export class DiscountService {
@@ -57,8 +58,13 @@ export class DiscountService {
     }
 
 
-    async getDiscounts(){
-        return await this.discountRepository.find({relations : ["product"]})
+    async getDiscounts(paginationOptions : GetProductDto){
+        let skip= null;
+        let take = 15;
+        if (paginationOptions.page){
+            skip = (paginationOptions.page -1)*take
+        }
+        return await this.discountRepository.find({relations : ["product"], take : take , skip : skip})
     }
 
 

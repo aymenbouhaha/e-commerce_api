@@ -1,9 +1,10 @@
-import {Body, Controller, Delete, Get, Param, ParseIntPipe, Post, UseGuards} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Query, UseGuards} from '@nestjs/common';
 import { DiscountService } from './discount.service';
 import {JwtAuthGuard} from "../user/guard/jwt-auth.guard";
 import {User} from "../decorator/user.decorator";
 import {UserEntity} from "../user/entity/user.entity";
 import {AddDiscountDto} from "./dto/add-discount.dto";
+import {GetProductDto} from "../common/get-product.dto";
 
 @Controller('discount')
 export class DiscountController {
@@ -12,8 +13,8 @@ export class DiscountController {
 
 
   @Get()
-  getDiscounts(){
-    return this.discountService.getDiscounts()
+  getDiscounts(@Query() params : GetProductDto){
+    return this.discountService.getDiscounts(params)
   }
 
 
