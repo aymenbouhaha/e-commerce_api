@@ -1,7 +1,6 @@
 import {GatewayTimeoutException, Injectable} from '@nestjs/common';
 import {ConfigService} from "@nestjs/config";
 import {MailerService} from "@nestjs-modules/mailer";
-import {UnknownElementException} from "@nestjs/core/errors/exceptions/unknown-element.exception";
 
 @Injectable()
 export class MailService {
@@ -20,7 +19,7 @@ export class MailService {
                 to: email,
                 subject: 'Verification Code',
                 html: `
-                <h1>Welcome to our Didon ART</h1>
+                <h1>Welcome to our Elegent</h1>
                 <p>Here is your verification code ${verifCode}</p>
                 `
             });

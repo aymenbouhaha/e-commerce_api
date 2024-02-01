@@ -3,11 +3,10 @@ import {
   Column,
   Entity, JoinColumn,
   ManyToOne,
-  OneToMany, OneToOne,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { CategoryEntity } from '../../category/entity/category.entity';
-import { ImageEntity } from './image.entity';
 import { DiscountEntity } from '../../discount/entity/discount.entity';
 
 @Entity('product')
@@ -37,11 +36,7 @@ export class ProductEntity {
   })
   category: CategoryEntity;
 
-  @OneToMany((type) => ImageEntity, (image) => image.product, {
-    cascade: ['insert'],
-    eager : true
-  })
-  images: ImageEntity[];
+  images: string[];
 
   @OneToOne((type) => DiscountEntity, (discount) => discount.product,
       {

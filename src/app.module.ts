@@ -10,7 +10,6 @@ import {UserEntity} from "./user/entity/user.entity";
 import {OrderEntity} from "./order/entity/order.entity";
 import {ProductEntity} from "./product/entity/product.entity";
 import {TypeOrmModule} from "@nestjs/typeorm";
-import {ImageEntity} from "./product/entity/image.entity";
 import {CategoryEntity} from "./category/entity/category.entity";
 import {DiscountEntity} from "./discount/entity/discount.entity";
 import {ConfigModule} from "@nestjs/config";
@@ -51,7 +50,7 @@ dotenv.config()
             username: 'root',
             password: '',
             database: 'e-commerce',
-            entities: [UserEntity, OrderEntity, ProductEntity,ImageEntity,CategoryEntity,DiscountEntity,BasketEntity, OrderProductEntity, BasketProductEntity],
+            entities: [UserEntity, OrderEntity, ProductEntity,CategoryEntity,DiscountEntity,BasketEntity, OrderProductEntity, BasketProductEntity],
             synchronize: true,
             // logging : true,
             timezone : "GMT+1"

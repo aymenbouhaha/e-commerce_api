@@ -20,7 +20,7 @@ export class DiscountController {
 
   @Post("add")
   @UseGuards(JwtAuthGuard)
-  addDicsount(@User() user : Partial<UserEntity>, @Body() discountToAdd : AddDiscountDto){
+  addDiscount(@User() user : Partial<UserEntity>, @Body() discountToAdd : AddDiscountDto){
     return this.discountService.addDiscount(user,discountToAdd)
   }
 

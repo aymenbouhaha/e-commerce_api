@@ -5,11 +5,9 @@ import {InjectRepository} from "@nestjs/typeorm";
 import {AddProductDto} from "./dto/add-product.dto";
 import {UserEntity, UserRole} from "../user/entity/user.entity";
 import {CategoryService} from "../category/category.service";
-import {ImageEntity} from "./entity/image.entity";
 import {UpdateProductDto} from "./dto/update-product.dto";
-import { v4 as uuidv4 } from 'uuid';
-import * as sharp from "sharp";
 import {GetProductDto} from "../common/get-product.dto";
+
 
 @Injectable()
 export class ProductService {
@@ -23,12 +21,10 @@ export class ProductService {
 
     async getProducts(paginationOptions : GetProductDto) {
         let skip= null;
-        let take = 2;
+        let take = 10;
         if (paginationOptions.page){
-            skip = (paginationOptions.page -1)*2
-
+            skip = (paginationOptions.page -1)*10
         }
-        console.log(paginationOptions)
         const length = await this.productRepository.count()
         if (paginationOptions.category){
             const category = await this.categoryService.getCategroyByName(paginationOptions.category)
@@ -38,7 +34,7 @@ export class ProductService {
             const products = await this.productRepository.find(
                 {
                     where : {category : category},
-                    relations : ["images", "category" ],
+                    relations : ["category"],
                     take:take,
                     skip: skip
                 }
@@ -55,7 +51,6 @@ export class ProductService {
                 take : take
             }
         )
-        console.log(length)
         return  {
             products : products,
             length : length
@@ -64,7 +59,7 @@ export class ProductService {
 
 
 
-    async addProduct(newProduct : AddProductDto, user : Partial<UserEntity>, images : Array<Express.Multer.File>){
+    async addProduct(newProduct : AddProductDto, user : Partial<UserEntity>){
         if (user.role!= UserRole.admin){
             throw new UnauthorizedException()
         }
@@ -76,18 +71,7 @@ export class ProductService {
         const product=this.productRepository.create({
             ...partialProduct,
             category : category,
-            images : []
         })
-        for (const image of images) {
-        {
-            const imageEntity : ImageEntity= new ImageEntity()
-            imageEntity.name=uuidv4()+image.originalname
-            imageEntity.type=image.mimetype
-            // const buffer=await sharp(image.buffer).resize(100).toBuffer()
-            imageEntity.data=image.buffer
-            product.images.push(imageEntity)
-        }
-    }
         try {
             return await this.productRepository.save(product)
         }catch (e){

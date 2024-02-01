@@ -5,18 +5,18 @@ import {
     HttpStatus,
     Injectable,
     NotFoundException
-} from '@nestjs/common';
-import {InjectRepository} from "@nestjs/typeorm";
-import {UserEntity} from "./entity/user.entity";
-import {Repository} from "typeorm";
-import {JwtService} from "@nestjs/jwt";
-import {SignUpDto} from "./dto/sign-up.dto";
-import * as bcrypt from 'bcrypt';
-import {LoginDto} from "./dto/login.dto";
-import {BasketEntity} from "../basket/entity/basket.entity";
-import {MailService} from "./mail/mail.service";
-import {VerifyCodeDto} from "./dto/verify-code.dto";
-import {UpdateUserDto} from "./dto/update-user.dto";
+} from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { UserEntity } from "./entity/user.entity";
+import { Repository } from "typeorm";
+import { JwtService } from "@nestjs/jwt";
+import { SignUpDto } from "./dto/sign-up.dto";
+import * as bcrypt from "bcrypt";
+import { LoginDto } from "./dto/login.dto";
+import { BasketEntity } from "../basket/entity/basket.entity";
+import { MailService } from "./mail/mail.service";
+import { VerifyCodeDto } from "./dto/verify-code.dto";
+import { UpdateUserDto } from "./dto/update-user.dto";
 
 @Injectable()
 export class UserService {
@@ -29,6 +29,8 @@ export class UserService {
     ) {
     }
 
+
+
     async signUp(userData : SignUpDto){
         const user=this.userRepository.create(
             {
@@ -37,8 +39,7 @@ export class UserService {
         )
         user.salt= await bcrypt.genSalt();
         user.password = await bcrypt.hash(user.password,user.salt)
-        const verifCode = Math.floor(1000+ Math.random()*9000).toString()
-        user.verificationCode=verifCode
+        user.verificationCode=Math.floor(1000 + Math.random() * 9000).toString()
         user.basket=new BasketEntity()
         try {
             await this.userRepository.save(user)
@@ -81,7 +82,7 @@ export class UserService {
 
     async login(credentials : LoginDto){
         const {email, password} = credentials;
-        const user = await this.userRepository.findOne({where : {email : email} , relations : ["basket", "basket.basketProduct", "basket.basketProduct.product" , "basket.basketProduct.product.images"]})
+        const user = await this.userRepository.findOne({where : {email : email} , relations : ["basket", "basket.basketProduct", "basket.basketProduct.product"]})
         if (!user) {
             throw new NotFoundException(`l'email ou le mot de passe sont incorrecte`)
         }
@@ -109,7 +110,8 @@ export class UserService {
     }
   }
 
-  update(user : Partial<UserEntity>, userData: UpdateUserDto) {
+
+    update(user : Partial<UserEntity>, userData: UpdateUserDto) {
 
     return this.userRepository.update(user.id,userData);
   }

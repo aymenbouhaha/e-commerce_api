@@ -28,7 +28,7 @@ export class BasketService {
     }
     const basket = this.basketRepository.findOne({
       where: { user: user },
-      relations: ['basketProduct' , "basketProduct.product" , "basketProduct.product.images"],
+      relations: ['basketProduct' , "basketProduct.product" ],
     });
     if (!basket) {
       throw new NotFoundException("Le panier n'exite pas");

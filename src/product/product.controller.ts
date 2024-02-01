@@ -6,16 +6,14 @@ import {
     ParseIntPipe,
     Patch,
     Post,
-    Query, Req,
-    UploadedFiles,
+    Query,
     UseGuards,
-    UseInterceptors
+
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import {JwtAuthGuard} from "../user/guard/jwt-auth.guard";
 import {User} from "../decorator/user.decorator";
 import {UserEntity} from "../user/entity/user.entity";
-import {FilesInterceptor} from "@nestjs/platform-express";
 import {GetProductDto} from "../common/get-product.dto";
 import { UpdateProductDto } from './dto/update-product.dto';
 import {AddProductDto} from "./dto/add-product.dto";
@@ -26,27 +24,11 @@ export class ProductController {
 
   @Post("add")
   @UseGuards(JwtAuthGuard)
-  @UseInterceptors(FilesInterceptor(
-      "images",
-      10,
-      {
-        fileFilter :
-            (req, file, callback)=>{
-              if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
-                return callback(new Error('Vous pouvez ajouter que des images'), false);
-              }
-              callback(null, true);
-            }
-      }
-  ))
   async addProduct(
       @Body() newProduct : AddProductDto ,
       @User() user : Partial<UserEntity>,
-      @UploadedFiles() images : Array<Express.Multer.File>
   ){
-      console.log(images)
-    return this.productService.addProduct(newProduct,user,images)
-
+    return this.productService.addProduct(newProduct,user)
   }
 
   @Get()
