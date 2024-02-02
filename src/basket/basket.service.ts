@@ -27,7 +27,10 @@ export class BasketService {
       throw new UnauthorizedException();
     }
     const basket = this.basketRepository.findOne({
-      where: { user: user },
+      where: { user: {
+        id : user.id
+          }
+        },
       relations: ['basketProduct' , "basketProduct.product" ],
     });
     if (!basket) {
@@ -46,8 +49,8 @@ export class BasketService {
     }
     try {
       return this.basketProductRepository.delete({
-        product: product,
-        productBasket: user.basket,
+        product: { id : product.id },
+        productBasket: { id : user.basket.id },
       });
     } catch (e) {
       throw new ConflictException(

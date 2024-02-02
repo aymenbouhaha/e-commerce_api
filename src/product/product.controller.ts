@@ -38,7 +38,6 @@ export class ProductController {
 
   @Get(':id')
   async getProductById(@Param("id",ParseIntPipe) id: number) {
-      console.log(id)
     return await this.productService.getProductById(id);
   }
 

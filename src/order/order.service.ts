@@ -40,7 +40,7 @@ export class OrderService {
         }else {
             return await this.orderRepository.find(
                 {
-                    where : {client : user}, relations : ["orderProducts" , "orderProducts.product", "orderProducts.product.images"],
+                    where : {client : { id : user.id }}, relations : ["orderProducts" , "orderProducts.product", "orderProducts.product.images"],
                     take : take,
                     skip : skip
                 }

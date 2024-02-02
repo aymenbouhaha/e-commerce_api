@@ -1,4 +1,4 @@
-import {IsNotEmpty, IsNumber, IsPositive, IsString} from "class-validator";
+import { IsArray, IsNotEmpty, IsNumber, IsPositive, IsString } from "class-validator";
 import {Type} from "class-transformer";
 
 export class AddProductDto{
@@ -26,6 +26,9 @@ export class AddProductDto{
     @IsString()
     @IsNotEmpty()
     description : string
+
+    @IsArray()
+    images : string[]
 
 
 

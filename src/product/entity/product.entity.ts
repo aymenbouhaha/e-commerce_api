@@ -36,6 +36,9 @@ export class ProductEntity {
   })
   category: CategoryEntity;
 
+  @Column({
+    type : "simple-array"
+  })
   images: string[];
 
   @OneToOne((type) => DiscountEntity, (discount) => discount.product,

@@ -1,4 +1,4 @@
-import {Module} from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from "@nestjs/common";
 import {AppController} from './app.controller';
 import {AppService} from './app.service';
 import {UserModule} from './user/user.module';
@@ -19,6 +19,8 @@ import {OrderProductEntity} from "./order/entity/order-product.entity";
 import {BasketProductEntity} from "./basket/entity/basket-product.entity";
 import * as dotenv from 'dotenv';
 import {MailerModule} from "@nestjs-modules/mailer";
+import { HttpLoggerInterceptor } from "./http-logger.interceptor";
+import { APP_INTERCEPTOR } from "@nestjs/core";
 
 
 dotenv.config()
@@ -44,21 +46,26 @@ dotenv.config()
             }
         ),
         TypeOrmModule.forRoot({
-            type: 'mysql',
+            type: 'postgres',
             host: 'localhost',
-            port: 3306,
-            username: 'root',
-            password: '',
+            port: 5432,
+            username: 'postgres',
+            password: 'aymen',
             database: 'e-commerce',
             entities: [UserEntity, OrderEntity, ProductEntity,CategoryEntity,DiscountEntity,BasketEntity, OrderProductEntity, BasketProductEntity],
             synchronize: true,
-            // logging : true,
-            timezone : "GMT+1"
         }),
         BasketModule,
     ],
     controllers: [AppController],
-    providers: [AppService],
+    providers: [
+      AppService,
+        {
+            provide: APP_INTERCEPTOR,
+            useClass: HttpLoggerInterceptor,
+        }
+    ],
 })
 export class AppModule {
+
 }

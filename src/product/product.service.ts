@@ -25,12 +25,19 @@ export class ProductService {
         if (paginationOptions.page){
             skip = (paginationOptions.page -1)*10
         }
-        const length = await this.productRepository.count()
+        let length
         if (paginationOptions.category){
             const category = await this.categoryService.getCategroyByName(paginationOptions.category)
             if (!category){
                 throw new ConflictException("la category n'existe pas")
             }
+            length = await this.productRepository.count({
+                where : {
+                    category : {
+                        id : category.id
+                    }
+                }
+            })
             const products = await this.productRepository.find(
                 {
                     where : {category : category},
@@ -46,11 +53,12 @@ export class ProductService {
         }
         const products=await  this.productRepository.find(
             {
-                relations: ["images", "category"],
+                relations: ["category"],
                 skip : skip,
                 take : take
             }
         )
+        length = await this.productRepository.count()
         return  {
             products : products,
             length : length
