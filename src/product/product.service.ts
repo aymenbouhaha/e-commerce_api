@@ -7,6 +7,7 @@ import {UserEntity, UserRole} from "../user/entity/user.entity";
 import {CategoryService} from "../category/category.service";
 import {UpdateProductDto} from "./dto/update-product.dto";
 import {GetProductDto} from "../common/get-product.dto";
+import { ImagesArray } from "../common/constant";
 
 
 @Injectable()
@@ -66,11 +67,23 @@ export class ProductService {
     }
 
 
+    private getRandomElements(arr: string[], numberOfElements: number): string[] {
+        const shuffledArray = arr.sort(() => Math.random() - 0.5);
+        return shuffledArray.slice(0, numberOfElements);
+    }
+
 
     async addProduct(newProduct : AddProductDto, user : Partial<UserEntity>){
         if (user.role!= UserRole.admin){
             throw new UnauthorizedException()
         }
+        let images: string[]
+        if (!newProduct.images){
+            images=this.getRandomElements(ImagesArray,4)
+        }else {
+            images=newProduct.images
+        }
+        console.log(images);
         const {categoryName , ...partialProduct}=newProduct
         const category= await this.categoryService.getCategroyByName(categoryName)
         if (!category){
@@ -78,6 +91,7 @@ export class ProductService {
         }
         const product=this.productRepository.create({
             ...partialProduct,
+            images : images,
             category : category,
         })
         try {
